@@ -2,7 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
+
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
 
 // Optional: load environment variables from a .env file when available (dev convenience)
 try {
