@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ullavar Connect - Admin Data Viewer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #388e3c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+        .auth-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .auth-section input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-right: 10px;
+            width: 200px;
+        }
+        .auth-section button {
+            padding: 10px 20px;
+            background: #388e3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .auth-section button:hover {
+            background: #2e7d32;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            border-radius: 8px 8px 0 0;
+            margin-right: 4px;
+        }
+        .tab.active {
+            background: #388e3c;
+            color: white;
+        }
+        .data-section {
+            display: none;
+        }
+        .data-section.active {
+            display: block;
+        }
+        .submission {
+            background: #fafafa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #388e3c;
+        }
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-type {
+            background: #388e3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .detail-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #388e3c;
+            font-size: 0.9em;
+        }
+        .detail-value {
+            margin-top: 2px;
+            word-break: break-word;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #2e7d32;
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 Ullavar Connect - Admin Data Viewer</h1>
+        
+        <div class="auth-section">
+            <input type="password" id="adminKey" placeholder="Enter Admin Key" value="ullavar2025">
+            <button onclick="loadData()">🔍 Load Data</button>
+            <button onclick="refreshData()">🔄 Refresh</button>
+        </div>
+
+        <div id="authError" class="error" style="display: none;"></div>
+        <div id="authSuccess" class="success" style="display: none;"></div>
+
+        <div id="dataContainer" style="display: none;">
+            <div class="stats" id="statsContainer"></div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('submissions')">📋 Form Submissions</button>
+                <button class="tab" onclick="showTab('registrations')">👥 User Registrations</button>
+            </div>
+
+            <div id="submissions" class="data-section active">
+                <h3>📋 Form Submissions</h3>
+                <div id="submissionsData"></div>
+            </div>
+
+            <div id="registrations" class="data-section">
+                <h3>👥 User Registrations</h3>
+                <div id="registrationsData"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = { submissions: [], registrations: [] };
+
+        function showTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update content sections
+            document.querySelectorAll('.data-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function hideMessages() {
+            document.getElementById('authError').style.display = 'none';
+            document.getElementById('authSuccess').style.display = 'none';
+        }
+
+        function showError(message) {
+            hideMessages();
+            const errorDiv = document.getElementById('authError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            hideMessages();
+            const successDiv = document.getElementById('authSuccess');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        async function loadData() {
+            const adminKey = document.getElementById('adminKey').value;
+            if (!adminKey) {
+                showError('Please enter admin key');
+                return;
+            }
+
+            try {
+                // Load submissions
+                const submissionsResponse = await fetch('/api/submissions', {
+                    headers: { 'x-admin-key': adminKey }
+                });
+                
+                // Load registrations
+                const registrationsResponse = await fetch('/api/user-data', {
+                    headers: { 'x-admin-key': adminKey }
+                });
+
+                if (!submissionsResponse.ok) {
+                    const error = await submissionsResponse.json();
+                    showError(error.error || 'Failed to load submissions');
+                    return;
+                }
+
+                if (!registrationsResponse.ok) {
+                    const error = await registrationsResponse.json();
+                    showError(error.error || 'Failed to load registrations');
+                    return;
+                }
+
+                currentData.submissions = await submissionsResponse.json();
+                currentData.registrations = await registrationsResponse.json();
+
+                showSuccess(`✅ Loaded ${currentData.submissions.length} submissions and ${currentData.registrations.length} registrations`);
+                document.getElementById('dataContainer').style.display = 'block';
+                
+                renderStats();
+                renderSubmissions();
+                renderRegistrations();
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            }
+        }
+
+        function renderStats() {
+            const submissionTypes = {};
+            currentData.submissions.forEach(sub => {
+                const type = sub.payload.formType || 'Unknown';
+                submissionTypes[type] = (submissionTypes[type] || 0) + 1;
+            });
+
+            const registrationTypes = {};
+            currentData.registrations.forEach(reg => {
+                const type = reg.data?.userType || reg.type || 'Unknown';
+                registrationTypes[type] = (registrationTypes[type] || 0) + 1;
+            });
+
+            const statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-number">${currentData.submissions.length}</div>
+                    <div class="stat-label">Total Form Submissions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${currentData.registrations.length}</div>
+                    <div class="stat-label">Total Registrations</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Object.keys(submissionTypes).length}</div>
+                    <div class="stat-label">Form Types</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${(registrationTypes.farmer || 0) + (registrationTypes['farmer-registration'] || 0)}</div>
+                    <div class="stat-label">Farmer Registrations</div>
+                </div>
+            `;
+            document.getElementById('statsContainer').innerHTML = statsHtml;
+        }
+
+        function renderSubmissions() {
+            const container = document.getElementById('submissionsData');
+            if (currentData.submissions.length === 0) {
+                container.innerHTML = '<p>No form submissions found.</p>';
+                return;
+            }
+
+            const html = currentData.submissions.map(submission => {
+                const date = new Date(submission.receivedAt).toLocaleString();
+                const payload = submission.payload;
+                
+                let detailsHtml = '';
+                if (payload.name) detailsHtml += `<div class="detail-item"><div class="detail-label">Name</div><div class="detail-value">${payload.name}</div></div>`;
+                if (payload.email) detailsHtml += `<div class="detail-item"><div class="detail-label">Email</div><div class="detail-value">${payload.email}</div></div>`;
+                if (payload.phone) detailsHtml += `<div class="detail-item"><div class="detail-label">Phone</div><div class="detail-value">${payload.phone}</div></div>`;
+                if (payload.message) detailsHtml += `<div class="detail-item"><div class="detail-label">Message</div><div class="detail-value">${payload.message}</div></div>`;
+                
+                if (payload.extra) {
+                    Object.entries(payload.extra).forEach(([key, value]) => {
+                        if (value && value !== 'Not specified' && value !== 'None') {
+                            detailsHtml += `<div class="detail-item"><div class="detail-label">${key}</div><div class="detail-value">${value}</div></div>`;
+                        }
+                    });
+                }
+
+                return `
+                    <div class="submission">
+                        <div class="submission-header">
+                            <div class="form-type">${payload.formType || 'Unknown Form'}</div>
+                            <div class="timestamp">${date}</div>
+                        </div>
+                        <div class="details">${detailsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        function renderRegistrations() {
+            const container = document.getElementById('registrationsData');
+            if (currentData.registrations.length === 0) {
+                container.innerHTML = '<p>No user registrations found.</p>';
+                return;
+            }
+
+            const html = currentData.registrations.map(registration => {
+                const date = new Date(registration.timestamp).toLocaleString();
+                const data = registration.data || {};
+                
+                let detailsHtml = '';
+                Object.entries(data).forEach(([key, value]) => {
+                    if (value && value !== '' && key !== 'userType') {
+                        detailsHtml += `<div class="detail-item"><div class="detail-label">${key}</div><div class="detail-value">${value}</div></div>`;
+                    }
+                });
+
+                return `
+                    <div class="submission">
+                        <div class="submission-header">
+                            <div class="form-type">${data.userType || registration.type || 'Unknown Type'}</div>
+                            <div class="timestamp">${date}</div>
+                        </div>
+                        <div class="details">${detailsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        function refreshData() {
+            if (document.getElementById('dataContainer').style.display !== 'none') {
+                loadData();
+            }
+        }
+
+        // Auto-refresh every 30 seconds if data is loaded
+        setInterval(() => {
+            if (document.getElementById('dataContainer').style.display !== 'none') {
+                refreshData();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

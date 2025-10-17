@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "name": "Aadhivelan Masala",
+    "description": "Premium spices and masala products by Aadhivelan. Authentic South Indian flavors with traditional recipes.",
+    "logo": "",
+    "products": [
+      {
+        "name": "Sambar Powder",
+        "price": "125",
+        "image": "/uploads/1760538721951-page_2.png"
+      },
+      {
+        "name": "Gobi Masala",
+        "price": "140",
+        "image": "/uploads/1760538753447-page_1.png"
+      },
+      {
+        "name": "Idly Podi",
+        "price": "125",
+        "image": "/uploads/1760538781135-page_3.png"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Aadhivelan Organics",
+    "description": "Certified organic produce and farming inputs. Sustainable agriculture solutions for modern farmers.",
+    "logo": "/uploads/1760536028573-organics_logo.jpg",
+    "products": [
+      {
+        "name": "Organic Fertilizer",
+        "price": "500",
+        "image": "/assets/assert/Farm Shed Construction.jpg"
+      },
+      {
+        "name": "Bio Pesticide",
+        "price": "300",
+        "image": "/assets/assert/fencing.jpg"
+      }
+    ]
+  }
+]

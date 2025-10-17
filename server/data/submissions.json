@@ -1,0 +1,86 @@
+[
+  {
+    "receivedAt": "2025-10-13T16:33:18.835Z",
+    "toEmail": "uzhavarconnect2025@gmail.com",
+    "subject": "test Submission from Final Test",
+    "payload": {
+      "name": "Final Test",
+      "email": "final@local.test",
+      "phone": "000",
+      "message": "Final check",
+      "formType": "test"
+    }
+  },
+  {
+    "receivedAt": "2025-10-13T16:57:09.705Z",
+    "toEmail": "uzhavarconnect2025@gmail.com",
+    "subject": "assistant Submission from Assistant Test",
+    "payload": {
+      "name": "Assistant Test",
+      "email": "assistant@local.test",
+      "phone": "000",
+      "message": "Automated send test",
+      "formType": "assistant"
+    }
+  },
+  {
+    "receivedAt": "2025-10-16T12:14:17.275Z",
+    "toEmail": "uzhavarconnect2025@gmail.com",
+    "subject": "Start Managing My Farm Submission from Sample",
+    "payload": {
+      "name": "Sample",
+      "email": "kkprasanth24@gmail.com",
+      "phone": "9360244928",
+      "message": "Farm management plan confirmation for standard plan",
+      "formType": "Start Managing My Farm",
+      "extra": {
+        "Name": "Sample",
+        "Phone": "9360244928",
+        "Email": "kkprasanth24@gmail.com",
+        "Selected Plan": "standard",
+        "Land Location": "duraosamy nagar",
+        "Land Size": "25"
+      }
+    },
+    "metadata": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "ip": "127.0.0.1",
+      "referer": "http://localhost:3000/confirm-plan?type=standard",
+      "contentLength": "329"
+    }
+  },
+  {
+    "receivedAt": "2025-10-16T13:06:14.531Z",
+    "toEmail": "uzhavarconnect2025@gmail.com",
+    "subject": "Register as Farmer Submission from test 123",
+    "payload": {
+      "name": "test 123",
+      "email": "uzhavarconnect2025@gmail.com",
+      "phone": "9360244928",
+      "message": "New farmer registration",
+      "formType": "Register as Farmer",
+      "extra": {
+        "User Type": "farmer",
+        "Full Name": "test 123",
+        "Email": "uzhavarconnect2025@gmail.com",
+        "Phone": "9360244928",
+        "Address": "dtrytfulgi;o9087t6rydntgfhjhuoi",
+        "City": "hgjkhljk",
+        "State": "Tamil Nadu",
+        "Pincode": "641014",
+        "Farm Name": "ghjk",
+        "Farm Size": "58",
+        "Crop Types": "empty",
+        "Farming Experience": "0-2 years",
+        "Irrigation Type": "",
+        "Current Challenges": "ytufyioupio[t6urydhfgjkj;kl"
+      }
+    },
+    "metadata": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "ip": "127.0.0.1",
+      "referer": "http://localhost:3000/join",
+      "contentLength": "525"
+    }
+  }
+]
