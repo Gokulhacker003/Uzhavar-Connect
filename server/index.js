@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 // Optional: load environment variables from a .env file when available (dev convenience)
 try {
@@ -445,7 +445,8 @@ app.get('/api/user-data', (req, res) => {
   }
 });
 
-// Bind explicitly to 127.0.0.1 to avoid hostname/IPv6 resolution issues on some Windows setups
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`Server running on http://127.0.0.1:${PORT}`);
+
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
